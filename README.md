@@ -1,6 +1,8 @@
 # ChEMBL-MCP-Server
 [![smithery badge](https://smithery.ai/badge/@JackKuo666/chembl-mcp-server)](https://smithery.ai/server/@JackKuo666/chembl-mcp-server)
 
+[![smithery badge](https://smithery.ai/badge/@JackKuo666/chembl-mcp-server)](https://smithery.ai/server/@JackKuo666/chembl-mcp-server)
+
 A FastMCP wrapper server based on the chembl_webresource_client package, providing API access to the ChEMBL database.
 
 ## Features
@@ -13,6 +15,15 @@ A FastMCP wrapper server based on the chembl_webresource_client package, providi
 
 ## Installation
 
+### Installing via Smithery
+
+To install chembl-mcp-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@JackKuo666/chembl-mcp-server):
+
+```bash
+npx -y @smithery/cli install @JackKuo666/chembl-mcp-server --client claude
+```
+
+### Manual Installation
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/ChEMBL-MCP-Server.git

@@ -1,0 +1,44 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required: []
+    properties:
+      host:
+        type: string
+        default: 127.0.0.1
+        description: Server host address
+      port:
+        type: number
+        default: 8000
+        description: Server port
+      transport:
+        type: string
+        default: stdio
+        description: Transport method. 'http' falls back to stdio in this server.
+      logLevel:
+        type: string
+        default: INFO
+        description: Logging level
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => { 
+      // FastMCP currently only supports stdio transport internally, even if http is specified
+      const host = config.host || '127.0.0.1';
+      const port = config.port || 8000;
+      const transport = config.transport || 'stdio';
+      const logLevel = config.logLevel || 'INFO';
+      return {
+        command: 'python',
+        args: ['chembl_server.py', '--host', host, '--port', String(port), '--transport', transport, '--log-level', logLevel]
+      };
+    }
+  exampleConfig:
+    host: 127.0.0.1
+    port: 8000
+    transport: stdio
+    logLevel: INFO
