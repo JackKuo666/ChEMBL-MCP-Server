@@ -1,6 +1,26 @@
 import chembl_webresource_client
 from chembl_webresource_client.new_client import new_client
 from chembl_webresource_client.utils import utils
+import signal
+import time
+from functools import wraps
+
+def timeout(seconds):
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise TimeoutError(f"函数执行超过 {seconds} 秒")
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+        return wrapper
+    return decorator
 
 
 def example_activity(assay_chembl_id):
@@ -267,13 +287,29 @@ def example_structuralAlerts(smiles):
 if __name__ == "__main__":
 
     # Data entities examples
-    assay_chembl_id = 'CHEMBL829585'
-    activity_result = example_activity(assay_chembl_id)
-    print("Activity:", activity_result)
+    def run_with_timeout(func, *args, timeout_seconds=2):
+        try:
+            start_time = time.time()
+            result = func(*args)
+            end_time = time.time()
+            print(f"执行时间: {end_time - start_time:.2f}秒")
+            return result
+        except Exception as e:
+            print(f"执行失败或超时: {str(e)}")
+            return None
 
-    activity_chembl_id = 'CHEMBL1172741'
-    activity_supplementary_data_result = example_activity_supplementary_data_by_activity(activity_chembl_id)
-    print("Activity Supplementary Data:", activity_supplementary_data_result)
+    print("\n=== 测试 Activity ===")
+    assay_chembl_id = 'CHEMBL829585'
+    activity_result = run_with_timeout(example_activity, assay_chembl_id)
+    if activity_result:
+        print("Activity:", activity_result)
+
+    # print("\n=== 测试 Activity Supplementary Data ===")
+    # activity_chembl_id = 'CHEMBL1172741'
+    # activity_supplementary_data_result = run_with_timeout(
+    #     example_activity_supplementary_data_by_activity, activity_chembl_id)
+    # if activity_supplementary_data_result:
+    #     print("Activity Supplementary Data:", activity_supplementary_data_result)
 
     assay_type = 'B'
     assay_result = example_assay(assay_type)
@@ -385,8 +421,9 @@ if __name__ == "__main__":
 
     # Utils functions examples
     smiles = 'CC(=O)Oc1ccccc1C(=O)O'
-    canonicalize_smiles_result = example_canonicalizeSmiles(smiles)
-    print("Canonical SMILES:", canonicalize_smiles_result)
+    canonicalize_smiles_result = run_with_timeout(example_canonicalizeSmiles, smiles)
+    if canonicalize_smiles_result:
+        print("Canonical SMILES:", canonicalize_smiles_result)
 
     chembl_descriptors_result = example_chemblDescriptors(smiles)
     print("ChEMBL Descriptors:", chembl_descriptors_result)
