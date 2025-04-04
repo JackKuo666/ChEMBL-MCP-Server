@@ -1,4 +1,5 @@
 # ChEMBL-MCP-Server
+[![smithery badge](https://smithery.ai/badge/@JackKuo666/chembl-mcp-server)](https://smithery.ai/server/@JackKuo666/chembl-mcp-server)
 
 A FastMCP wrapper server based on the chembl_webresource_client package, providing API access to the ChEMBL database.
 
